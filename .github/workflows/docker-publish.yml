@@ -1,12 +1,28 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8
+name: Docker
 
-# Set the working directory to /app
-WORKDIR /app
+on:
+  push:
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+env:
+  DOCKER_USER: ${{secrets.DOCKER_USER}}
+  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+  IMAGE_NAME: prosail
+  VERSION: latest
 
-# Install any needed packages specified in requirements.txt
-RUN pip install #-r requirements.txt
-
+jobs:
+  push:
+    name: Push image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      - name: Docker login
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Build image
+        run: |
+          #docker pull $DOCKER_USER/$IMAGE_NAME:$VERSION
+          docker build . --file Dockerfile --tag $IMAGE_NAME
+      - name: Push image
+        run: |
+          docker tag $IMAGE_NAME $DOCKER_USER/$IMAGE_NAME:$VERSION
+          docker push $DOCKER_USER/$IMAGE_NAME:$VERSION
