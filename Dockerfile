@@ -14,7 +14,8 @@ FROM python:3.11-slim
 #ENV INSTALL_DIR=$HOME/bin
 #ENV PATH="$PATH:$INSTALL_DIR"
 
-RUN pip install prosail
+RUN pip install prosail numpy numba scipy backports.functools_lru_cache
+
 
 COPY --chown=docker:docker *.py /usr/local/bin
 
