@@ -2,22 +2,22 @@
 FROM python:3.11-slim
 
 # Create a dedicated 'docker' group and user
-#RUN groupadd docker && \
-#  useradd -m docker -g docker -p docker && \
-#  chmod 0777 /home/docker && \
-#  chgrp docker /usr/local/bin && \
-#  mkdir -p /home/docker/bin && chown docker /home/docker/bin
+RUN groupadd docker && \
+  useradd -m docker -g docker -p docker && \
+  chmod 0777 /home/docker && \
+  chgrp docker /usr/local/bin && \
+  mkdir -p /home/docker/bin && chown docker /home/docker/bin
 # Use this user by default
-#USER docker
+USER docker
 
-#ENV HOME=/home/docker
-#ENV INSTALL_DIR=$HOME/bin
-#ENV PATH="$PATH:$INSTALL_DIR"
+ENV HOME=/home/docker
+ENV INSTALL_DIR=$HOME/bin
+ENV PATH="$PATH:$INSTALL_DIR"
 
-RUN pip install prosail numpy numba scipy backports.functools_lru_cache
+RUN pip install prosail
 
+COPY --chown=docker:docker *.py $INSTALL_DIR
 
-COPY --chown=docker:docker *.py /usr/local/bin
+RUN mkdir -p /home/docker/.local && chmod -R 777 /home/docker/.local
 
-
-#WORKDIR /home/docker
+WORKDIR /home/docker
