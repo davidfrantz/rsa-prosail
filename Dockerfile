@@ -1,6 +1,10 @@
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
+RUN apt-get update && \
+    apt-get install -y procps && \
+    rm -rf /var/lib/apt/lists/*
+
 # Create a dedicated 'docker' group and user
 RUN groupadd docker && \
   useradd -m docker -g docker -p docker && \
